@@ -1,4 +1,4 @@
-FROM dockette/alpine:edge
+FROM dockette/alpine:3.5
 
 MAINTAINER Milan Sulc <sulcmil@gmail.com>
 
@@ -6,18 +6,17 @@ ENV ADMINER_VERSION=4.6.2
 ENV MEMORY=256M
 ENV UPLOAD=2048M
 
-RUN echo '@community http://nl.alpinelinux.org/alpine/edge/community' >> /etc/apk/repositories && \
-    echo '@testing http://nl.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories && \
-    apk update && apk upgrade && \
+RUN apk update && apk upgrade && \
     apk add \
         wget \
         ca-certificates \
-        php7@community \
-        php7-session@community \
-        php7-mysqli@community \
-        php7-pgsql@community \
-        php7-mongodb@testing && \
-        wget https://github.com/vrana/adminer/releases/download/v$ADMINER_VERSION/adminer-$ADMINER_VERSION.php -O /srv/index.php && \
+        php5 \
+        php5-pgsql \
+        php5-mysql && \
+        wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://github.com/sgerrand/alpine-pkg-php5-mongo/releases/download/1.6.14-r0/sgerrand.rsa.pub && \
+        wget https://github.com/sgerrand/alpine-pkg-php5-mongo/releases/download/1.6.14-r0/php5-mongo-1.6.14-r0.apk && \
+        apk add php5-mongo-1.6.14-r0.apk && \
+    wget https://github.com/vrana/adminer/releases/download/v$ADMINER_VERSION/adminer-$ADMINER_VERSION.php -O /srv/index.php && \
     apk del wget ca-certificates && \
     rm -rf /var/cache/apk/*
 
